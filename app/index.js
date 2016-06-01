@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './components/App.js'
 import Dashboard from './components/Dashboard.js'
+import Detail from './components/Detail.js'
 import Layout from './components/Layout.js'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory, hashHistory, IndexRoute, IndexRedirect } from 'react-router'
@@ -22,8 +22,8 @@ ReactDOM.render(
     <Router history={history}>
       <Route path="/" component={Layout}>
         <IndexRedirect to="/app" />
-        <Route path="/app" component={App} />
-        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/app" component={Dashboard} />
+        <Route path="/dashboard" component={Detail} />
       </Route>
     </Router>
   </Provider>,
