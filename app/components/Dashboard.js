@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import Filters from './Filters'
 import { getFeedPhotos, getPhotoDetail } from '../actions/photo' //TODO remove getPhotoDetail
 import { SORT_DEFAULT, SORT_BY_NAME_ASC, SORT_BY_NAME_DESC } from '../constants/FilterTypes'
@@ -29,19 +30,17 @@ export const Dashboard = React.createClass({
     return (
       <div>
         <Filters/>
-        <Content items={items} />
+        <DashboardContent items={items} />
       </div>
     )
   }
 })
 
-
-
-export const Content = React.createClass({
+export const DashboardContent = React.createClass({
   render: function() {
-    console.log(this.props)
+    // console.log(this.props)
     let { items } = this.props
-    items = items.map((item, i) => <ContentItem key={i} {...item} />)
+    items = items.map((item, i) => <DashboardContentItem key={i} {...item} />)
     return (
       <div>
         {items}
@@ -50,14 +49,14 @@ export const Content = React.createClass({
   }
 })
 
-export const ContentItem = React.createClass({
+export const DashboardContentItem = React.createClass({
 
   contextTypes: {
     dispatch: PropTypes.func.isRequired,
   },
 
   handleClick: function(e) {
-    e.preventDefault()
+    // e.preventDefault()
     const { dispatch } = this.context
     dispatch(getPhotoDetail(this.props))
   },
@@ -65,7 +64,10 @@ export const ContentItem = React.createClass({
   render: function() {
     return (
       <div>
-        <a href="#" onClick={this.handleClick}><img src={this.props.media.m}></img>{this.props.title}</a>
+        <Link to={`/photo/${this.props.photo_id}`} onClick={this.handleClick}>
+          <img src={this.props.media.m}></img>
+          {this.props.title}
+        </Link>
       </div>
     )
   }

@@ -4,7 +4,8 @@ import {
   RECEIVE_FEED_PHOTOS,
   REQUEST_PHOTO_SIZE,
   RECEIVE_PHOTO_SIZE,
-  SORT_BY_TYPE } from '../constants/ActionTypes'
+  SORT_BY_TYPE,
+  PICK_PHOTO_SIZE } from '../constants/ActionTypes'
 import { FLICKR_PUBLIC_FEED, FLICKR_REST } from '../constants/UrlList'
 import { FLICKR_API_KEY } from '../constants/Secure'
 
@@ -22,9 +23,20 @@ export function receiveFeedPhotos(items) {
 }
 
 export function getFeedPhotos() {
+  return (dispatch, getState) => {
+    const { photo } = getState()
+    if(photo.items.length) {
+      dispatch(receiveFeedPhotos(photo.items))
+    } else {
+      dispatch(fetchFeedPhotos())
+    }
+  }
+}
+
+export function fetchFeedPhotos() {
   return dispatch => {
     dispatch(requestFeedPhotos())
-    fetchJsonp(`${FLICKR_PUBLIC_FEED}?format=json`, // &id=52295245@N03
+    fetchJsonp(`${FLICKR_PUBLIC_FEED}?format=json`,
       { method: 'GET', jsonpCallback: 'jsoncallback' })
       .then(res => res.json())
       .then(res => dispatch(receiveFeedPhotos(res.items)))
@@ -39,6 +51,13 @@ export function sortByType(type) { // TODO move to app
   }
 }
 
+export function pickPhotoSize(size) { // TODO move
+  return {
+    type: PICK_PHOTO_SIZE,
+    size: size
+  }
+}
+
 export function requestPhotoSize() {
   return {
     type: REQUEST_PHOTO_SIZE
@@ -48,7 +67,7 @@ export function requestPhotoSize() {
 export function receivePhotoSize(item, sizes) {
   return {
     type: RECEIVE_PHOTO_SIZE,
-    item: Object.assign({}, item, { sizes: sizes })
+    item: Object.assign({}, item, { sizes: sizes || item.sizes })
   }
 }
 
@@ -59,9 +78,9 @@ export function fetchPhotoSizes(item) {
       { method: 'GET', jsonpCallback: 'jsoncallback' })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        console.log(res)
         dispatch(receivePhotoSize(item, res.sizes.size)) // learn how to safe-reading
-      }) //
+      })
       .catch(err => console.log(err))
   }
 }

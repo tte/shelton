@@ -13,12 +13,12 @@ export const Layout = React.createClass({
     return (
       <div className="this-is-layout">
         <div>
-          <Link to="/app">
-            auth
-          </Link>
-          <br/>
           <Link to="/dashboard">
             dashboard
+          </Link>
+          <br/>
+          <Link to="/detail">
+            detail
           </Link>
         </div>
         <div>
