@@ -59,7 +59,7 @@ export const PhotoDetailSize = React.createClass({
     const name = `${label} (${width}x${height})`
     return active
       ? (<span>{name}</span>)
-      : (<button onClick={e => this.context.dispatch(pickPhotoSize(label))}>
+      : (<button className="button" onClick={e => this.context.dispatch(pickPhotoSize(label))}>
           {name}
         </button>)
   }

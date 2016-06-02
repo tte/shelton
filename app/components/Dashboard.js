@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Filters from './Filters'
-import { getFeedPhotos, getPhotoDetail } from '../actions/photo' //TODO remove getPhotoDetail
-import { SORT_DEFAULT, SORT_BY_NAME_ASC, SORT_BY_NAME_DESC } from '../constants/FilterTypes'
+import { getFeedPhotos, getPhotoDetail } from '../actions/photo'
+import { SORT_DEFAULT, SORT_BY_NAME_ASC, SORT_BY_NAME_DESC, SORT_BY_DATE_ASC, SORT_BY_DATE_DESC } from '../constants/FilterTypes'
 import _ from 'lodash'
 
 export const Dashboard = React.createClass({
@@ -38,11 +38,10 @@ export const Dashboard = React.createClass({
 
 export const DashboardContent = React.createClass({
   render: function() {
-    // console.log(this.props)
     let { items } = this.props
     items = items.map((item, i) => <DashboardContentItem key={i} {...item} />)
     return (
-      <div>
+      <div className="box">
         {items}
       </div>
     )
@@ -56,18 +55,32 @@ export const DashboardContentItem = React.createClass({
   },
 
   handleClick: function(e) {
-    // e.preventDefault()
     const { dispatch } = this.context
     dispatch(getPhotoDetail(this.props))
   },
 
   render: function() {
+    const { photo_id, media, title, date_taken, author } = this.props
     return (
       <div>
-        <Link to={`/photo/${this.props.photo_id}`} onClick={this.handleClick}>
-          <img src={this.props.media.m}></img>
-          {this.props.title}
-        </Link>
+        <article className="media">
+          <div className="media-left">
+            <figure className="image is-240x240">
+              <Link to={`/photo/${photo_id}`} onClick={this.handleClick}>
+                <img className="is-fullwidth" src={media.m}></img>
+              </Link>
+            </figure>
+          </div>
+          <div className="media-content">
+            <div className="content">
+              <p>
+                <strong>{title}</strong> <small>{ author }</small>
+                <br/>
+                {date_taken}
+              </p>
+            </div>
+          </div>
+        </article>
       </div>
     )
   }
@@ -76,9 +89,13 @@ export const DashboardContentItem = React.createClass({
 const sortItems = function(items, type) {
   switch(type) {
     case SORT_BY_NAME_ASC:
-      return _.orderBy(items, ['title'], ['asc'])
+      return _.sortBy(items, ['title'])
     case SORT_BY_NAME_DESC:
-      return _.orderBy(items, ['title'], ['desc'])
+      return _.sortBy(items, ['title']).reverse()
+    case SORT_BY_DATE_ASC:
+      return _.sortBy(items, ['date_taken'])
+    case SORT_BY_DATE_DESC:
+      return _.sortBy(items, ['date_taken']).reverse()
     default:
       return items
   }

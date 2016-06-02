@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { sortByType } from '../actions/photo' // TODO move to app(?)
-import { SORT_DEFAULT, SORT_BY_NAME_ASC, SORT_BY_NAME_DESC } from '../constants/FilterTypes'
+import { SORT_DEFAULT, SORT_BY_NAME_ASC, SORT_BY_NAME_DESC, SORT_BY_DATE_ASC, SORT_BY_DATE_DESC } from '../constants/FilterTypes'
 
 export const Filters = React.createClass({
   render: function() {
     return (
-      <div>
+      <div className="filters">
         Filters
         <SortFilters/>
         <ViewFilters/>
@@ -30,10 +30,11 @@ export const SortFilters = React.createClass({
   render: function() {
     return (
       <div>
-        <button onClick={this.handleClick.bind(null, SORT_DEFAULT)}>Filter by name DEFAULT</button>
-        <button onClick={this.handleClick.bind(null, SORT_BY_NAME_ASC)}>Filter by name ASC</button>
-        <button onClick={this.handleClick.bind(null, SORT_BY_NAME_DESC)}>Filter by name DESC</button>
-        <button>Filter by date</button>
+        <span className="button" onClick={this.handleClick.bind(null, SORT_DEFAULT)}>Filter by name DEFAULT</span>
+        <span className="button" onClick={this.handleClick.bind(null, SORT_BY_NAME_ASC)}>Filter by name ASC<i className="fa fa-angle-up"></i></span>
+        <span className="button" onClick={this.handleClick.bind(null, SORT_BY_NAME_DESC)}>Filter by name DESC<i className="fa fa-angle-down"></i></span>
+        <span className="button" onClick={this.handleClick.bind(null, SORT_BY_DATE_ASC)}>Filter by date ASC<i className="fa fa-angle-up"></i></span>
+        <span className="button" onClick={this.handleClick.bind(null, SORT_BY_DATE_DESC)}>Filter by date DESC<i className="fa fa-angle-down"></i></span>
       </div>
     )
   }

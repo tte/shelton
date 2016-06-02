@@ -8,12 +8,6 @@ import { Router, Route, browserHistory, hashHistory, IndexRoute, IndexRedirect }
 import { syncHistoryWithStore } from 'react-router-redux'
 import configureStore from './configureStore'
 
-/** Looks like we can cut this */
-// if (module.hot) {
-//   module.hot.accept()
-//   // module.hot.decline("./routes.js")
-// }
-
 const store = configureStore()
 const history = syncHistoryWithStore(browserHistory, store)
 
