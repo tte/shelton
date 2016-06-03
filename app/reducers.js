@@ -4,12 +4,15 @@ import {
   SORT_BY_TYPE,
   RECEIVE_PHOTO_SIZE,
   PICK_PHOTO_SIZE,
-  CHANGE_VIEW_TYPE } from './constants/ActionTypes'
+  CHANGE_VIEW_TYPE,
+  APP_ERROR } from './constants/ActionTypes'
 import { SORT_DEFAULT, PICK_SIZE_DEFAULT, VIEW_DEFAULT } from './constants/FilterTypes'
 
 
 export function app(state = { error: false }, action) {
   switch(action.type) {
+    case APP_ERROR:
+      return Object.assign({}, state, { error: true, message: action.message})
     default:
       return state
   }

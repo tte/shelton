@@ -1,9 +1,8 @@
-import { SORT_BY_TYPE } from '../constants/ActionTypes'
-// export const APP_ERROR = 'APP_ERROR'
+import { APP_ERROR } from '../constants/ActionTypes'
 
 export function error(err) {
   return {
     type: APP_ERROR,
-    params: err
+    message: err
   }
 }

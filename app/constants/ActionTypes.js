@@ -1,3 +1,6 @@
+// App
+export const APP_ERROR = 'APP_ERROR'
+
 // Photo
 export const REQUEST_FEED_PHOTOS = 'REQUEST_FEED_PHOTOS'
 export const RECEIVE_FEED_PHOTOS = 'RECEIVE_FEED_PHOTOS'

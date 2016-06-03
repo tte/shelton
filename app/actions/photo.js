@@ -6,6 +6,7 @@ import {
   RECEIVE_PHOTO_SIZE } from '../constants/ActionTypes'
 import { FLICKR_PUBLIC_FEED, FLICKR_REST } from '../constants/UrlList'
 import { FLICKR_API_KEY } from '../constants/Secure'
+import { error } from './app'
 
 export function requestFeedPhotos() {
   return {
@@ -35,10 +36,10 @@ export function fetchFeedPhotos() {
   return dispatch => {
     dispatch(requestFeedPhotos())
     fetchJsonp(`${FLICKR_PUBLIC_FEED}?format=json`,
-      { method: 'GET', jsonpCallback: 'jsoncallback' })
+      { method: 'GET', timeout: 10000, jsonpCallback: 'jsoncallback' })
       .then(res => res.json())
       .then(res => dispatch(receiveFeedPhotos(res.items)))
-      .catch(err => console.log(err))
+      .catch(err => dispatch(error(err.toString())))
   }
 }
 
@@ -59,10 +60,10 @@ export function fetchPhotoSizes(item) {
   return dispatch => {
     dispatch(requestPhotoSize())
     fetchJsonp(`${FLICKR_REST}?method=flickr.photos.getSizes&api_key=${FLICKR_API_KEY}&format=json&photo_id=${item.photo_id}`,
-      { method: 'GET', jsonpCallback: 'jsoncallback' })
+      { method: 'GET', timeout: 10000, jsonpCallback: 'jsoncallback' })
       .then(res => res.json())
       .then(res => dispatch(receivePhotoSize(item, res.sizes.size))) // to safe-reading
-      .catch(err => console.log(err))
+      .catch(err => dispatch(error(err.toString())))
   }
 }
 
