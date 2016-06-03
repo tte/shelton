@@ -1,4 +1,4 @@
-# shelton - codename for React/Redux test project.
+# shelton - codename for React/Redux test project
 
 ## Install depencies
 ```
