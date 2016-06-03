@@ -60,14 +60,20 @@ const mapStateToProps = (store, props) => {
   const { photo, filter } = store
   const { params } = props
 
-  const pickedItem = photo.items.filter(item => item.photo_id == params.photo_id)[0] // TODO safe dat
+  const pickedItem = photo.items.filter(item => item.photo_id == params.photo_id)[0]
+
+  // safe-reading pickedItem `source` if exists
+  let src = ''
+  if(pickedItem.sizes) {
+    const currentSize = pickedItem.sizes.filter(item => item.label == filter.pickedSize)[0]
+    src = currentSize.hasOwnProperty('source') ? currentSize.source : src
+  } else
+    src = pickedItem.media.m
 
   return {
     pickedSize: filter.pickedSize,
     photo: pickedItem,
-    src: pickedItem.sizes
-      ? pickedItem.sizes.filter(item => item.label == filter.pickedSize)[0].source // TODO safe dat
-      : pickedItem.media.m
+    src: src
   }
 }
 

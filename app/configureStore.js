@@ -38,19 +38,9 @@ export default function configureStore(initialState) {
       const nextReducer = require('./reducers');
       store.replaceReducer(nextReducer.default || nextReducer);
 
-      // return true to indicate that this module is accepted and
-      // there is no need to reload its parent modules
       return true
     });
   }
-
-  // if (module.hot) {
-  //   // Enable Webpack hot module replacement for reducers
-  //   module.hot.accept('./reducers', () => {
-  //     const nextRootReducer = require('./reducers').default
-  //     store.replaceReducer(nextRootReducer);
-  //   })
-  // }
 
   return store
 }

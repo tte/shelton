@@ -1,0 +1,1 @@
+export const FLICKR_API_KEY = 'your_awesome_key'
