@@ -35,7 +35,7 @@ export const PhotoDetail = React.createClass({
       : false
 
     return (
-      <div>
+      <div className="photo-detail">
         <div className="control is-grouped">
           <span className="control">
             <Link to='/' onClick={this.handleClick}>Назад к списку</Link>
@@ -48,8 +48,8 @@ export const PhotoDetail = React.createClass({
             </span>
           </div>
         </div>
-        <div>
-          <img src={src}></img>
+        <div className="photo-detail__image--container">
+          <img className="photo-detail__image" src={src}></img>
         </div>
       </div>
     )
