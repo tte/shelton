@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { PICK_SIZE_DEFAULT } from '../constants/FilterTypes'
-import { pickPhotoSize } from '../actions/photo' //TODO remove getPhotoDetail
+import { pickPhotoSize } from '../actions/filter'
 
 
 export const PhotoDetail = React.createClass({
@@ -11,71 +11,62 @@ export const PhotoDetail = React.createClass({
     router: PropTypes.object.isRequired
   },
 
-  childContextTypes: {
-    dispatch: PropTypes.func.isRequired,
-  },
-
-  getChildContext: function() {
-    return { dispatch: this.props.dispatch }
-  },
-
   handleClick: function(size, e) {
-    console.log('handleClick')
-    // e.preventDefault()
     const { dispatch } = this.props
     dispatch(pickPhotoSize(PICK_SIZE_DEFAULT))
   },
 
+  handleChange: function(e) {
+    const { dispatch } = this.props
+    dispatch(pickPhotoSize(e.target.value))
+  },
+
   render: function() {
     const { photo, pickedSize, src } = this.props
-    const items = photo.sizes // TODO можно вынести в mapStateToProps
-      ? photo.sizes.map((item, i) => <PhotoDetailSize key={i} {...item} active={item.label == pickedSize } />) // TODO подсвечиваем выбранный элемент  onClick={this.handleClick.bind(null, item.label)
-      : false // TODO spinner component!
+    const itemsOptions = photo.sizes
+      ? photo.sizes.map((item, i) => {
+          const { label, width, height, active } = item
+          return (
+            <option key={i} value={label}>
+              {`${label} (${width}x${height})`}
+            </option>
+          )
+        })
+      : false
 
     return (
       <div>
-        <Link to='/dashboard' onClick={this.handleClick}>Назад к списку</Link>
-        Detail
-          <div>
-            Sizes
-            {items}
+        <div className="control is-grouped">
+          <span className="control">
+            <Link to='/' onClick={this.handleClick}>Назад к списку</Link>
+          </span>
+          <div className="control">
+            <span className="select">
+              <select defaultValue={PICK_SIZE_DEFAULT} onChange={this.handleChange}>
+                {itemsOptions}
+              </select>
+            </span>
           </div>
-          <div>
-            <img src={src}></img>
-          </div>
+        </div>
+        <div>
+          <img src={src}></img>
+        </div>
       </div>
     )
   }
 })
 
-export const PhotoDetailSize = React.createClass({
-
-  contextTypes: {
-    dispatch: PropTypes.func.isRequired,
-  },
-
-  render: function() {
-    const { label, width, height, source, active } = this.props
-    const name = `${label} (${width}x${height})`
-    return active
-      ? (<span>{name}</span>)
-      : (<button className="button" onClick={e => this.context.dispatch(pickPhotoSize(label))}>
-          {name}
-        </button>)
-  }
-})
-
 const mapStateToProps = (store, props) => {
-  const { photo } = store
+  const { photo, filter } = store
   const { params } = props
 
   const pickedItem = photo.items.filter(item => item.photo_id == params.photo_id)[0] // TODO safe dat
 
   return {
-    pickedSize: photo.pickedSize,
+    pickedSize: filter.pickedSize,
     photo: pickedItem,
     src: pickedItem.sizes
-      ? pickedItem.sizes.filter(item => item.label == photo.pickedSize)[0].source // TODO safe dat
+      ? pickedItem.sizes.filter(item => item.label == filter.pickedSize)[0].source // TODO safe dat
       : pickedItem.media.m
   }
 }

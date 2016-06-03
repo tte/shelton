@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config');
+var config = require('./webpack.config.dev');
 var PORT = 3000; // TODO move to webpack
 
 new WebpackDevServer(webpack(config), {

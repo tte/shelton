@@ -5,6 +5,7 @@ import Filters from './Filters'
 import { getFeedPhotos, getPhotoDetail } from '../actions/photo'
 import { SORT_DEFAULT, SORT_BY_NAME_ASC, SORT_BY_NAME_DESC, SORT_BY_DATE_ASC, SORT_BY_DATE_DESC } from '../constants/FilterTypes'
 import _ from 'lodash'
+import moment from 'moment'
 
 export const Dashboard = React.createClass({
 
@@ -14,10 +15,16 @@ export const Dashboard = React.createClass({
 
   childContextTypes: {
     dispatch: PropTypes.func.isRequired,
+    sortType: PropTypes.object.isRequired,
+    viewType: PropTypes.object.isRequired
   },
 
   getChildContext: function() {
-    return { dispatch: this.props.dispatch }
+    return {
+      dispatch: this.props.dispatch,
+      sortType: this.props.filter.sortType,
+      viewType: this.props.filter.viewType
+    }
   },
 
   componentDidMount: function() {
@@ -26,22 +33,23 @@ export const Dashboard = React.createClass({
   },
 
   render: function() {
-    const { items } = this.props.photo
     return (
       <div>
         <Filters/>
-        <DashboardContent items={items} />
+        <DashboardContent {...this.props.photo} {...this.props.filter}/>
       </div>
     )
   }
 })
 
 export const DashboardContent = React.createClass({
+
   render: function() {
-    let { items } = this.props
+    let { items, viewType } = this.props
     items = items.map((item, i) => <DashboardContentItem key={i} {...item} />)
+
     return (
-      <div className="box">
+      <div className={`dashboard-content ${viewType.className}`}>
         {items}
       </div>
     )
@@ -62,25 +70,18 @@ export const DashboardContentItem = React.createClass({
   render: function() {
     const { photo_id, media, title, date_taken, author } = this.props
     return (
-      <div>
-        <article className="media">
-          <div className="media-left">
-            <figure className="image is-240x240">
-              <Link to={`/photo/${photo_id}`} onClick={this.handleClick}>
-                <img className="is-fullwidth" src={media.m}></img>
-              </Link>
-            </figure>
-          </div>
-          <div className="media-content">
-            <div className="content">
-              <p>
-                <strong>{title}</strong> <small>{ author }</small>
-                <br/>
-                {date_taken}
-              </p>
+      <div className="dashboard-content-item">
+        <Link to={`/photo/${photo_id}`} onClick={this.handleClick}>
+          <div className="dashboard-card">
+            <div>
+              <img className="dashboard-card__image" src={media.m}/>
+            </div>
+            <div className="dashboard-card__content">
+              <h4 className="title">{title}</h4> <p>{author}</p>
+              <p><small>{moment(date_taken).format('MMMM Do YYYY, h:mm:ss a')}</small></p>
             </div>
           </div>
-        </article>
+        </Link>
       </div>
     )
   }
@@ -89,22 +90,27 @@ export const DashboardContentItem = React.createClass({
 const sortItems = function(items, type) {
   switch(type) {
     case SORT_BY_NAME_ASC:
-      return _.sortBy(items, ['title'])
-    case SORT_BY_NAME_DESC:
-      return _.sortBy(items, ['title']).reverse()
     case SORT_BY_DATE_ASC:
-      return _.sortBy(items, ['date_taken'])
+      return _.sortBy(items, [type.target])
+    case SORT_BY_NAME_DESC:
     case SORT_BY_DATE_DESC:
-      return _.sortBy(items, ['date_taken']).reverse()
+    case SORT_DEFAULT:
+      return _.sortBy(items, [type.target]).reverse()
     default:
       return items
   }
 }
 
 const mapStateToProps = (store) => {
-  const { photo } = store
+  let { photo, filter } = store
 
-  return Object.assign({}, photo, { photo: { items: sortItems(photo.items, photo.sortType) }})
+  photo = Object.assign({}, photo, {
+    photo: Object.assign(photo, {
+      items: sortItems(photo.items, filter.sortType)
+    })
+  })
+
+  return { photo, filter }
 }
 
 export default connect(mapStateToProps)(Dashboard)
